@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolutor de Conjuntos con IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="flex h-screen">
+        <aside class="w-64 bg-gray-900 text-gray-300 flex flex-col">
+            <div class="p-5 border-b border-gray-800 flex items-center space-x-3">
+                <div class="p-2 bg-indigo-500 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 11.5V14m0-2.5v-6a2.5 2.5 0 115 0v6m0-2.5v2.5m6-2.5v6a2.5 2.5 0 11-5 0v-6a2.5 2.5 0 115 0z" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold text-white">IA Conjuntos</h2>
+            </div>
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="#" class="flex items-center px-4 py-2.5 text-gray-100 bg-gray-700/50 rounded-lg font-semibold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 14h.01M12 11h.01M12 17h.01M9 11h.01M15 11h.01M15 7h.01M12 7h.01" /></svg>
+                    Resolver Problema
+                </a>
+                </nav>
+            <div class="p-4 border-t border-gray-800 text-xs text-gray-500">
+                <p>&copy; 2025 Proyecto Conjuntos</p>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-10 overflow-y-auto">
+            {% block content %}{% end %}
+        </main>
+    </div>
+</body>
+</html>

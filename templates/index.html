@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <header class="mb-12">
+        <h1 class="text-5xl font-bold text-gray-900 tracking-tight">Teoría de Conjuntos</h1>
+        <p class="mt-3 text-xl text-gray-500">Introduce un problema de teoría de conjuntos. Nuestra IA analizará el enunciado, proporcionará una solución detallada y generará un diagrama de Venn correspondiente.</p>
+    </header>
+
+    <!-- Formulario de entrada -->
+    <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+        <form id="problem-form">
+            <label for="problem-textarea" class="block text-base font-semibold text-gray-800 mb-3">Enunciado del Problema</label>
+            <textarea id="problem-textarea" name="problem" class="w-full h-32 p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Ej: En una encuesta a 120 personas, 65 leen la revista A, 45 leen la revista B, 42 leen la C, 20 leen A y B, 25 leen A y C, 15 leen B y C y 8 leen las tres. Determina cuántas personas no leen ninguna de las tres revistas."></textarea>
+            <button id="submit-button" type="submit" class="mt-5 w-full flex justify-center items-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 shadow-lg">
+                <span id="button-text">Analizar y Resolver</span>
+                <svg id="loading-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </button>
+        </form>
+    </div>
+
+    <!-- Contenedor para mensajes de error o advertencia -->
+    <div id="message-container" class="hidden mt-6 p-4 rounded-lg text-sm"></div>
+
+    <!-- Resultados -->
+    <div id="results" class="hidden mt-10">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">Análisis</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Columna de la Solución Textual -->
+            <div id="solution-card" class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Explicación Detallada</h3>
+                <div id="solution" class="prose prose-lg max-w-none text-gray-700">
+                    <!-- El contenido de la IA se insertará aquí -->
+                </div>
+            </div>
+
+            <!-- Columna del Diagrama de Venn -->
+            <div id="diagram-container" class="bg-white p-8 rounded-xl shadow-md border border-gray-200 flex flex-col justify-center items-center">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Visualización</h3>
+                <img id="venn-diagram" src="" alt="Diagrama de Venn generado por la IA" class="max-w-full h-auto rounded-md">
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const form = document.getElementById('problem-form');
+    const resultsDiv = document.getElementById('results');
+    const solutionDiv = document.getElementById('solution');
+    const diagramContainer = document.getElementById('diagram-container');
+    const diagramImg = document.getElementById('venn-diagram');
+    const messageContainer = document.getElementById('message-container');
+    const submitButton = document.getElementById('submit-button');
+    const buttonText = document.getElementById('button-text');
+    const loadingSpinner = document.getElementById('loading-spinner');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Reset UI y mostrar estado de carga
+        resultsDiv.classList.add('hidden');
+        messageContainer.classList.add('hidden');
+        submitButton.disabled = true;
+        buttonText.textContent = 'Procesando...';
+        loadingSpinner.classList.remove('hidden');
+
+        try {
+            const response = await fetch('/solve', {
+                method: 'POST',
+                body: new FormData(form)
+            });
+
+            const result = await response.json();
+            
+            if (response.ok && !result.error) {
+                // Éxito: Mostrar resultados
+                resultsDiv.classList.remove('hidden');
+                
+                // Usar marked.js para renderizar la solución como HTML
+                solutionDiv.innerHTML = marked.parse(result.solution);
+
+                // Manejar la advertencia o el diagrama
+                if (result.warning) {
+                    showMessage(result.warning, 'warning');
+                    diagramContainer.classList.add('hidden');
+                } else if (result.diagram) {
+                    diagramImg.src = result.diagram;
+                    diagramContainer.classList.remove('hidden');
+                } else {
+                    diagramContainer.classList.add('hidden');
+                }
+            } else {
+                // Error del servidor o de la aplicación
+                const errorMessage = result.error || `Error ${response.status}: ${response.statusText}`;
+                showMessage(errorMessage, 'error');
+            }
+
+        } catch (err) {
+            // Error de red
+            showMessage('Error de conexión. No se pudo contactar al servidor.', 'error');
+        } finally {
+            // Restaurar el botón a su estado original
+            submitButton.disabled = false;
+            buttonText.textContent = 'Analizar y Resolver';
+            loadingSpinner.classList.add('hidden');
+        }
+    });
+
+    function showMessage(text, type) {
+        messageContainer.textContent = text;
+        const baseClasses = 'p-4 rounded-lg text-base font-medium';
+        if (type === 'error') {
+            messageContainer.className = `${baseClasses} bg-red-100 border border-red-300 text-red-800`;
+        } else if (type === 'warning') {
+            messageContainer.className = `${baseClasses} bg-yellow-100 border border-yellow-300 text-yellow-800`;
+        }
+        messageContainer.classList.remove('hidden');
+    }
+</script>
+{% end %}

@@ -1,0 +1,48 @@
+# Archivo para ignorar secretos y variables de entorno
+.env
+
+# Directorios de entorno virtual de Python
+# Mantiene las librerías instaladas fuera del repositorio
+/venv
+/.venv
+/env
+/ENV
+/env.bak
+/venv.bak
+
+# Archivos de caché y compilados de Python
+# Estos se generan automáticamente y no deben ser rastreados
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+
+# Carpetas de distribución y empaquetado
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Archivos de configuración de IDEs y editores de código
+# Evita conflictos de configuración entre colaboradores
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos generados por el sistema operativo
+.DS_Store
+Thumbs.db
