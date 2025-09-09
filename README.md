@@ -32,7 +32,7 @@ Sigue estos pasos para ejecutar el proyecto en tu máquina local.
 
 1.  **Clonar el repositorio (o descargar los archivos):**
     ```bash
-    git clone https://github.com/tu-usuario/tu-repositorio.git
+    git clone https://github.com/Marbinseca/Proyecto-Conjuntos.git
     cd tu-repositorio
     ```
 
